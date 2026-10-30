@@ -3249,7 +3249,7 @@ function sectionHTML(s, n) {
 function backHTML() {
   return sec('sec-back', '', 'Back to Paul', '') + prose('', [
     'If one type of problem gave you trouble, rework Paul’s practice problems for it: [Computing Limits](' + PAUL_P + 'ComputingLimits.aspx), [Infinite Limits](' + PAUL_P + 'InfiniteLimits.aspx) or [Limits At Infinity, Part I](' + PAUL_P + 'LimitsAtInfinityI.aspx).',
-    'Next, complete Problem Set 2. Unit 4 continues in Paul’s notes with [Continuity](' + PAUL_C + 'Continuity.aspx).']);
+    'Next, complete Problem Set 2, Parts 1 and 2. Unit 4 continues in Paul’s notes with [Continuity](' + PAUL_C + 'Continuity.aspx).']);
 }
 function page() {
   return header('Unit 3 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.title.replace('Rewriting a ', '').replace(/^An? /, '')]; }).concat([['#sec-back', 'Back to Paul']])) +
