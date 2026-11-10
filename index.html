@@ -2820,6 +2820,12 @@ var T_FRAC = ['https://tutorial.math.lamar.edu/Classes/Alg/RationalExpressions.a
 var T_PIECE = paulEx('ComputingLimits', 'Computing Limits', 'Examples 4 and 5');
 var T_INF = paulEx('InfiniteLimits', 'Infinite Limits', 'Examples 3 to 5');
 var T_ATINF = paulEx('LimitsAtInfinityI', 'Limits At Infinity, Part I', 'Example 3');
+/* More Practice (2026-11-10) */
+var T_EVEN = paulEx('InfiniteLimits', 'Infinite Limits', 'Example 2');
+var T_ATINF_HI = paulEx('LimitsAtInfinityI', 'Limits At Infinity, Part I', 'Example 4');
+var T_ATINF_LO = paulEx('LimitsAtInfinityI', 'Limits At Infinity, Part I', 'Example 5');
+var T_ABS = ['https://tutorial.math.lamar.edu/Classes/Alg/SolveAbsValueEqns.aspx', 'Paul’s Online Math Notes: Absolute Value Equations (the definition of absolute value)'];
+var DESMOS = 'https://www.desmos.com/scientific';
 
 /* typed text answers for infinite limits */
 var INF = ['infinity', '∞', '+infinity', '+∞', 'inf', 'positive infinity'];
@@ -2841,7 +2847,11 @@ var FORM = {
       }
       return count > n ? msg : null;
     };
-  }
+  },
+  /* no parentheses at all, with the row's own message (More Practice) */
+  noParen: function (msg) { return function (raw) { return /[()]/.test(raw) ? msg : null; }; },
+  /* at least one parenthesis: for a row that asks to factor (More Practice) */
+  factored: function (msg) { return function (raw) { return /[(]/.test(raw) ? null : msg; }; }
 };
 
 /* ---------------- the sections ---------------- */
@@ -2850,7 +2860,8 @@ var SECTIONS_P = [
   { id: 'sec-zero', title: 'Rewriting a 0/0 Limit', lede: 'These go with Paul’s [Computing Limits](' + T_FACTOR[0] + '), Examples 1 to 3.' },
   { id: 'sec-piece', title: 'A Piecewise Function', lede: 'This goes with Paul’s [Computing Limits](' + T_PIECE[0] + '), Examples 4 and 5.' },
   { id: 'sec-infinite', title: 'An Infinite Limit', lede: 'This goes with Paul’s [Infinite Limits](' + T_INF[0] + '), Examples 3 to 5.' },
-  { id: 'sec-atinf', title: 'A Limit at Infinity', lede: 'This goes with Paul’s [Limits At Infinity, Part I](' + T_ATINF[0] + '), Example 3.' }
+  { id: 'sec-atinf', title: 'A Limit at Infinity', lede: 'This goes with Paul’s [Limits At Infinity, Part I](' + T_ATINF[0] + '), Example 3.' },
+  { id: 'sec-more', title: 'More Practice (Only If You Want It)', nav: 'More Practice', lede: 'Nothing in this section is required. If a kind of problem above took you more than one try, the problem of the same kind here gives you another go: Problem 10 for the limit properties, Problems 11 to 13 for a `F{0}{0}` limit, Problems 14 and 15 for one-sided limits, Problem 16 for an infinite limit, and Problems 17 and 18 for limits at infinity. The Unit 3 Problem Set comes next either way.' }
 ];
 
 /* ---------------- the problems ---------------- */
@@ -3110,7 +3121,320 @@ var PROBLEMS = [
     graph: { x: [-40, 0], y: [-1, 0], ticks: { x: 10, y: 0.2 }, fns: [{ f: function (x) { return Math.sqrt(4 * x * x + 1) / (3 * x - 5); }, n: 400 }],
       hlines: [{ y: -2 / 3, role: 'muted' }], texts: [{ x: -22, y: -2 / 3, text: 'y = −2/3', at: 's' }],
       aria: 'The graph of the square root of 4x squared plus 1, over 3x minus 5, for x from −40 to 0. Moving left, the curve falls from about −0.3 and levels off just above a dashed horizontal line at y = −2/3.' },
-    after: 'As `x → −∞`, the graph levels off at the horizontal asymptote `y = −F{2}{3}`.' }
+    after: 'As `x → −∞`, the graph levels off at the horizontal asymptote `y = −F{2}{3}`.' },
+
+  /* ================= More Practice (optional), added 2026-11-10 by the clarity rebuild =================
+     From the practice twins removed from Unit 3 Worked Examples (plan/clarity-rebuild/twins/unit-03.md: 3.2 to 3.9) and
+     the value-add kind (plan/clarity-rebuild/units/unit-03/value-add.md: a limit with an absolute value, Paul's Computing
+     Limits 12 and 13, here with a new function). Twin 3.1 is left out (plugging in: Problem 1 and Worked Example 3.1).
+     Every key and wrong answer: SPEC.md, "More Practice"; sympy: tests/check_math.py; judging: tests/judge_check.js. */
+
+  /* 10. (twin 3.2) what the limit properties can and cannot give */
+  { id: 'm1', sec: 'sec-more', task: 'Use these three facts to find each limit, or say that it cannot be found from them.', board: ['lim{x→1} p(x) = −3', 'lim{x→1} q(x) = 0', 'lim{x→1} r(x) = 5'], teach: T_PROPS,
+    steps: [
+      { lead: 'Replace each function by its limit.', ask: 'lim{x→1} [p(x)^2 − r(x)] =', num: true, ans: '4',
+        wrongs: [['-14', '`(−3)^2 = 9`, not `−9`. A negative number squared is positive.'],
+          ['14', 'Subtract the limit of `r(x)`: the limit is `9 − 5`.'],
+          ['-8', 'Square the limit of `p(x)` before you subtract: `(−3)^2 = 9`.']],
+        hints: ['Work out `(−3)^2`, then subtract 5.'] },
+      { lead: 'Find the limit of the inside first, then take the square root.', ask: 'lim{x→1} sqrt(r(x) + 4q(x) + 4) =', num: true, ans: '3',
+        wrongs: [['9', 'That is the limit of the inside, `5 + 4 · 0 + 4`. Take its square root.'],
+          ['sqrt(13)', 'The limit of `q(x)` is 0, so `4q(x)` approaches `4 · 0 = 0`, not 4.']],
+        hints: ['The inside approaches `5 + 4 · 0 + 4`. Then take the square root.'] },
+      { lead: 'A quotient needs the limit of its bottom not to be 0.', ask: 'lim{x→1} F{q(x)}{r(x)} =', num: true, ans: '0',
+        wrongs: [[['does not exist', 'dne', 'cannot be found', 'cannot be found from this information', 'cannot be determined', 'undefined', 'not enough information'], 'The limit of the bottom is 5, not 0, so the quotient property applies, even though the top approaches 0.'],
+          ['5', 'That is the limit of the bottom alone. Divide the limit of the top, 0, by it.']],
+        hints: ['Divide the limit of `q(x)` by the limit of `r(x)`.'] },
+      { lead: 'Which statement about `lim{x→1} F{r(x)}{q(x)}` is true?', ok: 0, pick: [
+        ['It cannot be found from this information', 'The limit of the bottom is 0, so the quotient property does not apply. Whether the quotient heads to `∞`, to `−∞` or to neither depends on the sign of `q(x)` near 1, which you are not told.'],
+        ['It is `∞`', 'The quotient grows in size, but its sign depends on the sign of `q(x)` near 1, which you are not told. With `q(x) = −(x − 1)^2` it heads to `−∞`.'],
+        ['It is 0', 'A bottom close to 0 does not make the quotient 0. The top approaches 5, so the quotient grows in size.'],
+        ['It is 5', 'Dividing 5 by a number close to 0 does not give 5. It gives a number far from 0.']] }] },
+
+  /* 11. (twin 3.3) a 0/0 limit that factors, at a negative number */
+  { id: 'm2', sec: 'sec-more', board: 'lim{x→−1} F{x^2 − 2x − 3}{x^2 + 4x + 3}', teach: T_FACTOR,
+    steps: [
+      { lead: 'Plugging in `x = −1` gives `F{1 + 2 − 3}{1 − 4 + 3} = F{0}{0}`, so the top and the bottom share a factor. Which one?', ok: 0, pick: [
+        ['`x + 1`', 'A polynomial equal to 0 at `x = a` has the factor `x − a`, and here `x − (−1) = x + 1`.'],
+        ['`x − 1`', 'A polynomial equal to 0 at `x = a` has the factor `x − a`. With `a = −1`, that is `x − (−1) = x + 1`.'],
+        ['`x + 3`', '`x + 3` is 0 at `x = −3`, not at `x = −1`. It is a factor of the bottom only.']] },
+      { lead: 'Factor the top.', ask: 'x^2 − 2x − 3 = (x + 1) ·', ans: 'x - 3',
+        wrongs: [['x + 3', 'Check by multiplying: `(x + 1)(x + 3) = x^2 + 4x + 3`, which is the bottom. For the top you need two numbers that multiply to `−3` and add to `−2`.'],
+          ['(x + 1)(x - 3)', 'That is the whole factored top. Type only the factor that multiplies `x + 1`.']],
+        hints: ['Find two numbers that multiply to `−3` and add to `−2`. One of them is 1.'] },
+      { lead: 'Factor the bottom.', ask: 'x^2 + 4x + 3 = (x + 1) ·', ans: 'x + 3',
+        wrongs: [['x - 3', 'Check by multiplying: `(x + 1)(x − 3) = x^2 − 2x − 3`, which is the top. For the bottom you need two numbers that multiply to 3 and add to 4.'],
+          ['(x + 1)(x + 3)', 'That is the whole factored bottom. Type only the factor that multiplies `x + 1`.']],
+        hints: ['Find two numbers that multiply to 3 and add to 4. One of them is 1.'] },
+      { lead: 'Cancel the common factor.', ask: 'lim{x→−1} F{(x + 1)(x − 3)}{(x + 1)(x + 3)} = lim{x→−1}', ans: '(x - 3)/(x + 3)', at: -1,
+        wrongs: [['(x + 3)/(x - 3)', 'That is upside down. The `x − 3` came from the top.'],
+          ['-1', '`x − 3` and `x + 3` are different factors, so they do not cancel. Only the common factor `x + 1` cancels.']],
+        hints: ['Cross out `x + 1` on the top and on the bottom. Type the fraction that is left.'] },
+      { lead: 'Plug in `x = −1`.', ask: 'lim{x→−1} F{x − 3}{x + 3} =', num: true, ans: '-2',
+        wrongs: [['2', '`−1 + 3 = 2`, so the bottom is positive, and the top `−1 − 3 = −4` is negative. The quotient is negative.'],
+          ['-1/2', 'Put `x = −1` into the top, `x − 3`, and into the bottom, `x + 3`. The top is `−4` and the bottom is 2.'],
+          [['0/0', 'undefined', 'does not exist', 'dne'], 'Plug into the cancelled form `F{x − 3}{x + 3}`, not the original. Its bottom is 2 at `x = −1`.', ['#ex-p2', 'See Problem 2: plug into the cancelled form']]],
+        hints: ['Work out `−1 − 3` and `−1 + 3`, then divide.'] }],
+    graph: { x: [-2, 3], y: [-6, 1], ticks: { x: 1, y: 1 }, fns: [{ f: function (x) { return (x - 3) / (x + 3); } }], dots: [{ x: -1, y: -2, open: true, label: '(−1, −2)', at: 'se' }],
+      aria: 'The graph of the original function: a rising curve with an open circle, a hole, at (−1, −2).' },
+    after: 'The original function equals `F{x − 3}{x + 3}` except at `x = −1`, where its graph has a hole at height `−2`.' },
+
+  /* 12. (twin 3.4) the conjugate, with the square root on the bottom */
+  { id: 'm3', sec: 'sec-more', board: 'lim{x→3} F{x − 3}{sqrt(x + 6) − 3}', teach: T_ROOT,
+    steps: [
+      { lead: 'Plugging in `x = 3` gives `F{0}{sqrt(9) − 3} = F{0}{0}`. This time the square root is on the bottom. What do you try?', ok: 0, pick: [
+        ['Multiply the top and the bottom by `sqrt(x + 6) + 3`', 'That is the conjugate of the bottom, and `(a − b)(a + b) = a^2 − b^2` removes the root from the bottom.'],
+        ['Multiply the top and the bottom by `sqrt(x + 6) − 3`', 'That squares the bottom and keeps the root, because `(sqrt(x + 6) − 3)^2` still contains `sqrt(x + 6)`. Change the sign between the two terms.'],
+        ['Factor and cancel', '`sqrt(x + 6) − 3` does not factor into polynomials. Multiply by the conjugate first to remove the root.'],
+        ['Nothing: the conjugate only works on the top', 'The conjugate removes a root from whichever part it multiplies out, top or bottom.']] },
+      { lead: 'Multiply out the new bottom.', ask: '(sqrt(x + 6) − 3)(sqrt(x + 6) + 3) =', ans: 'x - 3',
+        form: function (raw) { return (/sqrt|√/.test(raw) ? 'That is right so far. Squaring the root removes it, because `(sqrt(x + 6))^2 = x + 6`. Simplify what is left.' : null) || FORM.expanded(raw) || FORM.terms(2, 'That is equal, but it still has like terms to combine. Combine the constants.')(raw); },
+        wrongs: [[['x + 3', 'x + 6 - 3'], 'Square both terms: `(a − b)(a + b) = a^2 − b^2`, and `3^2 = 9`.'],
+          ['x + 15', 'The product is a difference of squares, `a^2 − b^2`, so the 9 is subtracted.']],
+        hints: ['Use `(a − b)(a + b) = a^2 − b^2` with `a = sqrt(x + 6)` and `b = 3`.'] },
+      { show: 'lim{x→3} F{(x − 3)(sqrt(x + 6) + 3)}{x − 3}' },
+      { lead: 'The conjugate moved to the top. Cancel `x − 3`.', ask: 'lim{x→3} F{(x − 3)(sqrt(x + 6) + 3)}{x − 3} = lim{x→3}', ans: 'sqrt(x + 6) + 3', at: 3,
+        wrongs: [['1/(sqrt(x + 6) + 3)', 'Here the conjugate multiplied the top, so after `x − 3` cancels it stays on top, not under 1.', ['#ex-p5', 'See Problem 5, where the root was on top']],
+          ['sqrt(x + 6) - 3', 'The factor left is the conjugate you multiplied by, `sqrt(x + 6) + 3`, with its plus sign.']],
+        hints: ['Cross out `x − 3` on the top and on the bottom. Type what is left.'] },
+      { lead: 'Plug in `x = 3`.', ask: 'lim{x→3} (sqrt(x + 6) + 3) =', num: true, ans: '6',
+        wrongs: [['1/6', 'Here the conjugate is on top, so the limit is `sqrt(9) + 3` itself, not 1 over it.'],
+          ['12', '`sqrt(9) = 3`, not 9.'],
+          ['0', 'Keep the plus sign: the factor is `sqrt(x + 6) + 3`.']],
+        hints: ['`sqrt(3 + 6) = sqrt(9)`. Work it out, then add 3.'] }],
+    graph: { x: [-6, 10], y: [2, 8], ticks: { x: 2, y: 1 }, fns: [{ f: function (x) { return Math.sqrt(x + 6) + 3; }, domain: [-6, 10] }], dots: [{ x: 3, y: 6, open: true, label: '(3, 6)', at: 'se' }],
+      aria: 'The graph of the original function: a curve starting at (−6, 3) and rising more and more slowly, with an open circle, a hole, at (3, 6).' },
+    after: 'The original function equals `sqrt(x + 6) + 3` except at `x = 3`, where its graph has a hole at height 6.' },
+
+  /* 13. (twin 3.5) a fraction inside a fraction, with a square root: two rewrites in a row, then a check by calculator */
+  { id: 'm4', sec: 'sec-more', task: 'Evaluate the limit. Then check it with a calculator.', board: 'lim{h→0} F{F{1}{sqrt(16 + h)} − F{1}{4}}{h}', v: 'h', teach: T_ROOT,
+    steps: [
+      { lead: 'Plugging in `h = 0` gives `F{F{1}{4} − F{1}{4}}{0} = F{0}{0}`. The top is a difference of fractions, and one has a square root. What do you do first?', ok: 0, pick: [
+        ['Write the top as one fraction, then multiply by the conjugate', 'Over one denominator the top becomes `4 − sqrt(16 + h)`, a difference with a root, which the conjugate can clear.'],
+        ['Multiply by the conjugate right away', 'The top is not yet a root minus a number, so there is no conjugate to use. Combine the two fractions first.'],
+        ['Rewrite the top as `F{1}{sqrt(16 + h) − 4}`', 'Fractions do not subtract by subtracting their bottoms. At `h = 9`, the top is `F{1}{5} − F{1}{4} = −F{1}{20}`, but `F{1}{5 − 4} = 1`.'],
+        ['The limit is 0, because the top approaches 0', 'The bottom approaches 0 too. `F{0}{0}` settles nothing until you rewrite the fraction.']] },
+      { lead: 'Find a common denominator for `F{1}{sqrt(16 + h)}` and `F{1}{4}`.', ask: '"common denominator:"', ans: '4sqrt(16 + h)', teach: T_FRAC,
+        wrongs: [['sqrt(16 + h)', '`sqrt(16 + h)` is a multiple of the first denominator only. A common denominator must be a multiple of 4 as well.'],
+          ['sqrt(16 + h) + 4', 'A common denominator is a multiple of both denominators. Multiply them instead of adding them.']],
+        hints: ['Multiply the two denominators.'] },
+      { lead: 'Over `4sqrt(16 + h)`, the two fractions are `F{4}{4sqrt(16 + h)}` and `F{sqrt(16 + h)}{4sqrt(16 + h)}`. Subtract the second top from the first.', ask: '"new top:"', ans: '4 - sqrt(16 + h)',
+        wrongs: [['sqrt(16 + h) - 4', 'Order matters. `F{1}{4}` is the fraction subtracted, so its new top, `sqrt(16 + h)`, is subtracted from 4.', ['#ex-p6', 'See Problem 6, the same step']],
+          ['0', '`sqrt(16 + h)` equals 4 only at `h = 0`, and a limit never uses `h = 0`. Keep the root.']],
+        hints: ['The first top is 4 and the second is `sqrt(16 + h)`. Subtract them in that order.'] },
+      { show: 'lim{h→0} F{4 − sqrt(16 + h)}{4h sqrt(16 + h)}' },
+      { lead: 'Dividing by `h` put it on the bottom. Now multiply the top and the bottom by the conjugate, `4 + sqrt(16 + h)`, and multiply out the new top.', ask: '(4 − sqrt(16 + h))(4 + sqrt(16 + h)) =', ans: '-h',
+        form: function (raw) { return FORM.expanded(raw) || FORM.terms(1, 'That is equal, but combine like terms: the 16s cancel.')(raw); },
+        wrongs: [['h', '`16 − (16 + h) = 16 − 16 − h`. The minus sign reaches the `h` too.'],
+          ['-12 - h', 'Square both terms: `4^2 = 16`, so the new top is `16 − (16 + h)`.'],
+          ['32 + h', 'The product is a difference of squares, `a^2 − b^2`, so `16 + h` is subtracted from 16.']],
+        hints: ['Use `(a − b)(a + b) = a^2 − b^2` with `a = 4` and `b = sqrt(16 + h)`.'] },
+      { show: 'lim{h→0} F{−h}{4h sqrt(16 + h)(4 + sqrt(16 + h))}' },
+      { lead: 'Cancel `h` on the top and the bottom. Keep every other factor.', ask: '"after cancelling:"', ans: '-1/(4sqrt(16 + h)(4 + sqrt(16 + h)))', at: 0,
+        wrongs: [['1/(4sqrt(16 + h)(4 + sqrt(16 + h)))', 'Keep the minus sign from `−h`.'],
+          ['-1/(4(4 + sqrt(16 + h)))', 'Only `h` cancels. The factor `sqrt(16 + h)` on the bottom stays.'],
+          ['-1/128', 'That is the limit, which comes on the next line. On this line, cancel `h` and keep the `h` inside each root.']],
+        hints: ['The `h` in `−h` cancels the `h` in `4h`. What is left on top is `−1`.'] },
+      { lead: 'Plug in `h = 0`.', ask: 'lim{h→0} F{−1}{4sqrt(16 + h)(4 + sqrt(16 + h))} =', num: true, ans: '-1/128', tol: 0.00003,
+        wrongs: [['1/128', 'Keep the minus sign.'],
+          ['-1/32', 'Keep the 4 in front: the bottom is `4 · sqrt(16) · (4 + sqrt(16))`.'],
+          ['-1/64', '`4 + sqrt(16) = 4 + 4 = 8`, not 4. The bottom is `4 · 4 · 8`.']],
+        hints: ['`sqrt(16) = 4`. Work out `4 · 4 · (4 + 4)`.'] },
+      { lead: 'Check the limit with a calculator, such as the [Desmos scientific calculator](' + DESMOS + '). Work out the original expression at `h = 0.01`, rounded to five decimal places.', ask: 'F{F{1}{sqrt(16.01)} − F{1}{4}}{0.01} ≈', num: true, ans: '-0.00781', tol: 0.000004,
+        wrongs: [['0.00781', 'The top is negative: `F{1}{sqrt(16.01)}` is a little less than `F{1}{4}`. Keep the minus sign.'],
+          ['-0.00008', 'That is the top alone, rounded. Divide it by `h = 0.01`.']],
+        hints: ['Work out `F{1}{sqrt(16.01)} − 0.25` first. Then divide by 0.01 and round to five decimal places.'] },
+      { lead: 'Now work it out at `h = −0.01`.', ask: 'F{F{1}{sqrt(15.99)} − F{1}{4}}{−0.01} ≈', num: true, ans: '-0.00782', tol: 0.0000045,
+        wrongs: [['0.00782', 'Dividing by `−0.01` changes the sign. Here the top, `F{1}{sqrt(15.99)} − F{1}{4}`, is positive, so the quotient is negative.'],
+          ['-0.00781', 'Round with care: the value is about `−0.0078162`, and its sixth decimal digit, 6, rounds the fifth digit up.'],
+          ['0.00008', 'That is the top alone, rounded. Divide it by `h = −0.01`.']],
+        hints: ['Work out `F{1}{sqrt(15.99)} − 0.25` first. Then divide by `−0.01` and round to five decimal places.'] },
+      { lead: 'Do the two values support the limit `−F{1}{128} ≈ −0.00781`?', ok: 0, pick: [
+        ['Yes: both are close to `−0.00781`, one on each side of `−F{1}{128}`', 'At `h = 0.01` the value is about `−0.0078088`, just above `−F{1}{128} = −0.0078125`; at `h = −0.01` it is about `−0.0078162`, just below.'],
+        ['No: neither one equals `−F{1}{128}` exactly', 'Values near `h = 0` only need to be close to the limit. The expression has no value at `h = 0` itself.'],
+        ['No: the two values are different', 'They differ only in the fifth decimal place, and both sit within 0.00001 of `−F{1}{128}`.']] }],
+    graph: { x: [-10, 10], y: [-0.016, -0.004], pad: { l: 64 }, ticks: { x: 5, y: [-0.016, -0.012, -0.008, -0.004], yfmt: function (v) { return fmtNum(v, 3); } }, fns: [{ f: function (h) { var r = Math.sqrt(16 + h); return -1 / (4 * r * (4 + r)); } }],
+      dots: [{ x: 0, y: -1 / 128, open: true, label: '(0, −1/128)', at: 'se' }],
+      aria: 'The graph of the original function of h: a slowly rising curve below the h-axis with an open circle, a hole, at (0, −1/128).' },
+    after: 'The original function equals `F{−1}{4sqrt(16 + h)(4 + sqrt(16 + h))}` except at `h = 0`, where its graph has a hole at height `−F{1}{128}`.' },
+
+  /* 14. (twin 3.6) a piecewise function with two cutoffs */
+  { id: 'm5', sec: 'sec-more', task: 'Find `lim{x→−1} g(x)` and `lim{x→1} g(x)`, or say why one does not exist.', board: ['g(x) = 5 − x^2, "if" x < −1', 'g(x) = 2x + 6, "if" −1 ≤ x < 1', 'g(x) = x^2 + 6, "if" x ≥ 1'], teach: T_PIECE,
+    steps: [
+      { lead: 'For `lim{x→−1^-} g(x)`, which formula do you use?', ok: 0, pick: [
+        ['`5 − x^2`', '`x → −1^-` means `x < −1`, and `5 − x^2` is the formula for `x < −1`.'],
+        ['`2x + 6`', '`2x + 6` is the formula for `−1 ≤ x < 1`. From the left of `−1`, `x` is less than `−1`.'],
+        ['`x^2 + 6`', '`x^2 + 6` is the formula for `x ≥ 1`, which is far from `−1`. From the left of `−1`, `x < −1`.']] },
+      { ask: 'lim{x→−1^-} g(x) =', num: true, ans: '4',
+        wrongs: [['6', '`(−1)^2 = 1`, so `5 − (−1)^2 = 5 − 1`. A negative number squared is positive.'],
+          ['7', '7 comes from `x^2 + 6`, the formula for `x ≥ 1`. Left of `−1`, use `5 − x^2`.']],
+        hints: ['Plug `x = −1` into `5 − x^2`.'] },
+      { lead: 'Now the right-hand limit at `−1`.', ask: 'lim{x→−1^+} g(x) =', num: true, ans: '4',
+        wrongs: [['8', '`2(−1) = −2`, not 2. A positive times a negative is negative.'],
+          ['5', 'The 2 multiplies `x`: `2(−1) = −2`, so `2(−1) + 6 = −2 + 6`.']],
+        hints: ['Just right of `−1`, `−1 ≤ x < 1`. Plug `x = −1` into `2x + 6`.'] },
+      { lead: 'Which statement about `lim{x→−1} g(x)` is true?', ok: 0, pick: [
+        ['The limit is 4.', 'Both one-sided limits are 4, so the two-sided limit is 4.'],
+        ['The limit does not exist, because the formula changes at `−1`.', 'A change of formula does not by itself break the limit. Here both sides approach 4.'],
+        ['You need `g(−1)` to decide.', 'A limit uses only values near `−1`, never the value at `−1`. Both sides approach 4.']] },
+      { lead: 'Now the left-hand limit at `x = 1`.', ask: 'lim{x→1^-} g(x) =', num: true, ans: '8',
+        wrongs: [['7', '7 comes from `x^2 + 6`, the formula for `x ≥ 1`. Just left of 1, `−1 ≤ x < 1`, so use `2x + 6`.'],
+          ['4', '4 comes from `5 − x^2`, the formula for `x < −1`. Just left of 1, use `2x + 6`.']],
+        hints: ['Just left of 1, which formula covers `x`? Plug `x = 1` into it.'] },
+      { ask: 'lim{x→1^+} g(x) =', num: true, ans: '7',
+        wrongs: [['8', '8 comes from `2x + 6`. Just right of 1, `x ≥ 1`, so use `x^2 + 6`.'],
+          ['4', '4 comes from `5 − x^2`, the formula for `x < −1`. Just right of 1, use `x^2 + 6`.']],
+        hints: ['From the right, `x > 1`. Plug `x = 1` into `x^2 + 6`.'] },
+      { lead: 'Which statement about `lim{x→1} g(x)` is true?', ok: 0, pick: [
+        ['The limit does not exist.', 'The left-hand limit is 8 and the right-hand limit is 7, so there is no single number.'],
+        ['The limit is 7.5.', '7.5 is halfway between 8 and 7, but `g(x)` does not approach 7.5 from either side.'],
+        ['The limit is 7.', '7 is the right-hand limit and `g(1)`. From the left, `g(x)` approaches 8.'],
+        ['The limit is 8.', '8 is the left-hand limit only. From the right, `g(x)` approaches 7.']] }],
+    graph: { x: [-3, 3], y: [-4, 16], ticks: { x: 1, y: 4 }, fns: [{ f: function (x) { return 5 - x * x; }, domain: [-3, -1] }, { f: function (x) { return 2 * x + 6; }, domain: [-1, 1] }, { f: function (x) { return x * x + 6; }, domain: [1, 3] }],
+      dots: [{ x: -1, y: 4, label: '(−1, 4)', at: 'nw' }, { x: 1, y: 8, open: true, label: '(1, 8)', at: 'nw' }, { x: 1, y: 7, label: '(1, 7)', at: 'se' }],
+      aria: 'The graph of g: the curve 5 minus x squared rising to (−1, 4), the line 2x + 6 continuing from that point up to an open circle at (1, 8), then the curve x squared + 6 starting at a solid dot at (1, 7).' },
+    after: 'At `x = −1` the pieces meet at height 4. At `x = 1` the graph jumps from height 8 down to 7.' },
+
+  /* 15. (value-add: Paul, Computing Limits 12 and 13, new function) an absolute value: a different formula on each side */
+  { id: 'm6', sec: 'sec-more', board: 'lim{x→3} F{x^2 − 9}{|x − 3|}', teach: ['#ex-p7', 'See Problem 7: a one-sided limit on each side'],
+    steps: [
+      { lead: 'Plugging in `x = 3` gives `F{0}{0}`, and the bottom has an absolute value. What do you do first?', ok: 0, pick: [
+        ['Write `|x − 3|` without the bars on each side of 3, then take each one-sided limit', 'An absolute value uses a different formula on each side of the point where its inside is 0, here `x = 3`.'],
+        ['Replace `|x − 3|` with `x − 3` and cancel', 'That is true only for `x > 3`. For `x < 3`, `x − 3` is negative, and `|x − 3|` is its opposite.'],
+        ['Factor the top and cancel `x − 3` with `|x − 3|`', 'Only equal factors cancel, and `|x − 3|` equals `x − 3` only on one side of 3. Remove the bars first, one side at a time.']] },
+      { lead: 'Factor the top.', ask: 'x^2 − 9 = (x − 3) ·', ans: 'x + 3', teach: T_FACTOR,
+        wrongs: [['x - 3', '`(x − 3)(x − 3) = x^2 − 6x + 9`. A difference of squares factors as `a^2 − b^2 = (a − b)(a + b)`.'],
+          ['(x - 3)(x + 3)', 'That is the whole factored top. Type only the factor that multiplies `x − 3`.']],
+        hints: ['`x^2 − 9` is a difference of squares, `x^2 − 3^2`.'] },
+      { lead: 'For `x > 3`, the inside `x − 3` is positive. Write `|x − 3|` without the bars.', ask: '|x − 3| =', ans: 'x - 3', teach: T_ABS,
+        wrongs: [['3 - x', 'For `x > 3`, `3 − x` is negative, and an absolute value is never negative. Try `x = 5`: `|5 − 3| = 2`.'],
+          ['|x - 3|', 'That still has the bars. For `x > 3` the inside is already positive, so the bars leave it as it is. Type it without them.'],
+          ['x + 3', 'The bars never change a term inside them on their own. Try `x = 5`: `|5 − 3| = 2`, and `5 + 3 = 8`.']],
+        hints: ['Try a number: at `x = 5`, `|5 − 3| = 2`. Which expression in `x` gives 2 there?'] },
+      { lead: 'For `x > 3`, the fraction is `F{(x − 3)(x + 3)}{x − 3}`, and `x − 3` cancels. Take the right-hand limit.', ask: 'lim{x→3^+} F{x^2 − 9}{|x − 3|} =', num: true, ans: '6',
+        wrongs: [['-6', 'For `x > 3`, `|x − 3| = x − 3`, so the fraction is `x + 3`, which is positive near 3.'],
+          [['0/0', 'undefined', 'does not exist', 'dne', '0'], 'Cancel `x − 3` first: for `x > 3` the fraction is `x + 3`. Then plug in `x = 3`.']],
+        hints: ['Plug `x = 3` into `x + 3`.'] },
+      { lead: 'For `x < 3`, the inside `x − 3` is negative. Write `|x − 3|` without the bars.', ask: '|x − 3| =', ans: '-(x - 3)', teach: T_ABS,
+        wrongs: [['x - 3', 'For `x < 3`, `x − 3` is negative, and an absolute value is never negative. Try `x = 1`: `|1 − 3| = 2`, but `1 − 3 = −2`.'],
+          ['-x - 3', 'The minus sign multiplies both terms: `−(x − 3) = −x + 3`. Try `x = 1`: `|1 − 3| = 2`.'],
+          ['|x - 3|', 'That still has the bars. For `x < 3` the inside is negative, and the bars change its sign. Type that without the bars.']],
+        hints: ['Try a number: at `x = 1`, `|1 − 3| = 2`. The inside is `−2`, so you need its opposite.'] },
+      { lead: 'So for `x < 3`, the fraction is `F{(x − 3)(x + 3)}{−(x − 3)}`. Cancel `x − 3`.', ask: 'F{(x − 3)(x + 3)}{−(x − 3)} =', ans: '-(x + 3)', at: 3,
+        wrongs: [['x + 3', 'The `−1` from the bottom is still there after `x − 3` cancels. Keep it in front.', ['#ex-p3', 'See Problem 3, the same sign step']],
+          ['-x + 3', 'The minus sign multiplies both terms: `−(x + 3) = −x − 3`. Type `−(x + 3)` or `−x − 3`.']],
+        hints: ['Cross out `x − 3` on the top and on the bottom. What is left on the bottom is `−1`.'] },
+      { lead: 'Take the left-hand limit.', ask: 'lim{x→3^-} F{x^2 − 9}{|x − 3|} =', num: true, ans: '-6',
+        wrongs: [['6', 'Keep the minus sign: for `x < 3` the fraction is `−(x + 3)`.'],
+          ['0', 'The minus sign applies to all of `x + 3`. Work out `3 + 3` first, then change its sign.']],
+        hints: ['Plug `x = 3` into `−(x + 3)`.'] },
+      { lead: 'Which statement about `lim{x→3} F{x^2 − 9}{|x − 3|}` is true?', ok: 0, pick: [
+        ['The limit does not exist.', 'The left-hand limit is `−6` and the right-hand limit is 6, so the two sides disagree.'],
+        ['The limit is 6.', '6 is the right-hand limit only. From the left, the fraction approaches `−6`.'],
+        ['The limit is 0.', 'The two sides approach `−6` and 6. A limit needs both sides to approach the same number; they do not cancel to 0.']] }],
+    graph: { x: [0, 6], y: [-10, 10], ticks: { x: 1, y: 5 }, fns: [{ f: function (x) { return -(x + 3); }, domain: [0, 3] }, { f: function (x) { return x + 3; }, domain: [3, 6] }],
+      dots: [{ x: 3, y: -6, open: true, label: '(3, −6)', at: 'se' }, { x: 3, y: 6, open: true, label: '(3, 6)', at: 'nw' }],
+      aria: 'The graph of the function: the line y = −(x + 3) falling to an open circle at (3, −6), then the line y = x + 3 rising from an open circle at (3, 6).' },
+    after: 'From the left the graph heads to height `−6`, and from the right to height 6. The function has no value at `x = 3`.' },
+
+  /* 16. (twin 3.7) an infinite limit where the bottom is a square: the same sign on both sides */
+  { id: 'm7', sec: 'sec-more', task: 'Find the one-sided limits of `k` and its limit at `x = 2`, and every vertical asymptote of its graph.', board: 'k(x) = F{x − 6}{x^2 − 4x + 4}', teach: T_INF,
+    steps: [
+      { lead: 'Plugging in `x = 2` gives `F{−4}{4 − 8 + 4} = F{−4}{0}`. What does that tell you?', ok: 0, pick: [
+        ['The limit is infinite from each side, so find the sign from each side', 'A nonzero number divided by a number close to 0 is large in size, and the signs decide between `∞` and `−∞`.'],
+        ['Factor and cancel', 'Cancelling needs `F{0}{0}`. The top is `−4` at `x = 2`, so no factor of `x − 2` cancels.'],
+        ['The limit is 0', 'Dividing `−4` by a number close to 0 gives a number far from 0.']] },
+      { lead: 'Factor the bottom.', ask: 'x^2 − 4x + 4 =', ans: '(x - 2)^2', teach: T_EVEN,
+        form: FORM.factored('That is equal, but it is the bottom as given. Write it as a product of factors.'),
+        wrongs: [['(x + 2)^2', '`(x + 2)^2 = x^2 + 4x + 4`. The middle term here is `−4x`, so both factors are `x − 2`.'],
+          ['(x - 2)(x + 2)', '`(x − 2)(x + 2) = x^2 − 4`. You need two numbers that multiply to 4 and add to `−4`.']],
+        hints: ['Find two numbers that multiply to 4 and add to `−4`.'] },
+      { lead: 'Near `x = 2`, on either side, what is the sign of the bottom, `(x − 2)^2`?', ok: 0, pick: [
+        ['Positive on both sides', 'A square of a nonzero number is positive, so `(x − 2)^2 > 0` for every `x` other than 2.'],
+        ['Negative on the left, positive on the right', 'That is the sign of `x − 2`. Squaring makes it positive on both sides: at `x = 1.9`, `(−0.1)^2 = 0.01`.', T_EVEN],
+        ['Negative on both sides', 'A square is never negative: at `x = 1.9`, `(−0.1)^2 = 0.01`.', T_EVEN]] },
+      { lead: 'The top is close to `2 − 6 = −4` near `x = 2`. Divide the signs. Type ⟦infinity⟧ or ⟦-infinity⟧.', ask: 'lim{x→2^-} k(x) =', ans: NINF[0], also: NINF.slice(1), noPal: true,
+        wrongs: [[INF, 'Just left of 2 the bottom `(x − 2)^2` is positive and the top is negative. A negative over a small positive is a large negative number.'],
+          [DNE, 'From the left, the quotient decreases without bound. Write that as `−∞`, which says how the limit fails to be a number.']],
+        hints: ['A negative number divided by a small positive number is negative and large in size.'] },
+      { lead: 'Now the right-hand limit.', ask: 'lim{x→2^+} k(x) =', ans: NINF[0], also: NINF.slice(1), noPal: true,
+        wrongs: [[INF, 'The bottom is a square, so it is positive on the right too, and the top is still negative.', ['#ex-p8', 'Compare Problem 8, where the bottom changes sign']],
+          [DNE, 'From the right, the quotient decreases without bound. Write that as `−∞`, which says how the limit fails to be a number.']],
+        hints: ['For `x` just to the right of 2, find the sign of `(x − 2)^2`. Then divide the signs.'] },
+      { lead: 'Which statement about `lim{x→2} k(x)` is true?', ok: 0, pick: [
+        ['The limit is `−∞`.', 'Both sides head to `−∞`, so the two-sided limit is written `−∞`. It is still not a number, but `−∞` says how it fails to be one.'],
+        ['The limit does not exist, and nothing more can be said.', 'When both sides head to the same infinity, the limit is written as that infinity. Here both sides head to `−∞`.'],
+        ['The limit is `∞` from one side and `−∞` from the other.', 'That happens when the bottom changes sign at 2, as in Problem 8. A square does not change sign.']] },
+      { lead: 'Find every vertical asymptote of the graph of `k`. If there is more than one, separate them with commas.', ask: 'x =', list: true, num: true, ans: '2',
+        wrongs: [['6', 'At `x = 6` the top is 0, so `k(6) = 0`. A vertical asymptote is where the bottom is 0 and the top is not.'],
+          [['2, -2', '-2, 2'], '`(x − 2)^2` is 0 only at `x = 2`; it is not `x^2 − 4`. At `x = −2` the bottom is 16.']],
+        hints: ['Find every `x` where the bottom, `(x − 2)^2`, is 0 and the top is not.'] }],
+    graph: { x: [-2, 6], y: [-20, 2], ticks: { x: 1, y: 4 }, fns: [{ f: function (x) { return (x - 6) / ((x - 2) * (x - 2)); }, n: 600, breaks: [2] }], vlines: [{ x: 2, role: 'muted' }],
+      aria: 'The graph of k with a dashed vertical asymptote at x = 2. The curve falls without bound on both sides of x = 2.' },
+    after: 'The graph falls without bound on both sides of `x = 2`, because the bottom is positive on both sides.' },
+
+  /* 17. (twin 3.8) limits at infinity: the bottom's power is higher, then the top's */
+  { id: 'm8', sec: 'sec-more', task: 'Evaluate both limits.', board: ['"(a)" lim{x→−∞} F{2x^2 + 9}{x^3 − 4x}', '"(b)" lim{x→∞} F{x^3 − 4x}{2x^2 + 9}'], teach: T_ATINF_LO,
+    steps: [
+      { lead: 'In (a), the top and the bottom both grow in size without bound. What do you factor out of the top and the bottom?', ok: 0, pick: [
+        ['`x^3`, the largest power of `x` in the bottom', 'Then every term of the bottom but one goes to 0, and the limit can be read off.'],
+        ['`x^2`, the largest power of `x` in the top', 'Use the largest power in the bottom. Factoring out `x^2` leaves `x − F{4}{x}` on the bottom, which still grows.'],
+        ['Nothing: the quotient is `F{∞}{−∞} = −1`', '`F{∞}{−∞}` is an indeterminate form, like `F{0}{0}`. It can turn out to be any number, so factor first.']] },
+      { lead: 'Factor `x^3` out of the top.', ask: '2x^2 + 9 = x^3 ·', ans: '2/x + 9/x^3',
+        form: FORM.noParen('That is equal, but divide each term by `x^3` on its own and simplify.'),
+        wrongs: [['2/x + 9', 'Divide each term by `x^3`, so the 9 becomes `F{9}{x^3}`.'],
+          ['2 + 9/x^3', '`F{2x^2}{x^3} = F{2}{x}`: one `x` is left on the bottom.']],
+        hints: ['Divide each term of `2x^2 + 9` by `x^3`.'] },
+      { lead: 'Factor `x^3` out of the bottom.', ask: 'x^3 − 4x = x^3 ·', ans: '1 - 4/x^2',
+        form: FORM.noParen('That is equal, but divide each term by `x^3` on its own and simplify.'),
+        wrongs: [['1 - 4x', 'Divide each term by `x^3`, so `4x` becomes `F{4x}{x^3} = F{4}{x^2}`.'],
+          ['1 - 4/x', '`F{4x}{x^3} = F{4}{x^2}`: two powers of `x` are left on the bottom, not one.']],
+        hints: ['Divide each term of `x^3 − 4x` by `x^3`.'] },
+      { lead: 'As `x → −∞`, every term with a power of `x` on its bottom goes to 0.', ask: 'lim{x→−∞} F{F{2}{x} + F{9}{x^3}}{1 − F{4}{x^2}} =', num: true, ans: '0',
+        wrongs: [['2', '`F{2}{x}` goes to 0 as `x → −∞`, not to 2. The top goes to `0 + 0`.'],
+          [NINF, 'The top goes to 0 and the bottom to 1, so the quotient goes to `F{0}{1}`. Only a quotient whose size grows without bound has an infinite limit.']],
+        hints: ['Replace `F{2}{x}`, `F{9}{x^3}` and `F{4}{x^2}` with 0.'] },
+      { lead: 'In (b), factor `x^2`, the largest power in the bottom, out of the top and the bottom. The quotient becomes `F{x − F{4}{x}}{2 + F{9}{x^2}}`. If it grows without bound, type ⟦infinity⟧ or ⟦-infinity⟧.', ask: 'lim{x→∞} F{x^3 − 4x}{2x^2 + 9} =', ans: INF[0], also: INF.slice(1), noPal: true, teach: T_ATINF_HI,
+        wrongs: [[NINF, 'For large positive `x`, the top `x − F{4}{x}` and the bottom `2 + F{9}{x^2}` are both positive, so the quotient is positive.'],
+          [['1/2', '0.5', '.5'], 'The ratio of the leading coefficients is the limit only when the top and the bottom have the same highest power. Here the top has `x^3` and the bottom `x^2`.'],
+          ['0', 'That is (a), where the bottom has the higher power. In (b) the top does, and `x − F{4}{x}` grows without bound.'],
+          [DNE, 'The quotient grows without bound. Write that as `∞`, which says how the limit fails to be a number.']],
+        hints: ['As `x → ∞`, the top `x − F{4}{x}` grows without bound, and the bottom approaches 2.'] }] },
+
+  /* 18. (twin 3.9) a square root over a line: a different limit at each end */
+  { id: 'm9', sec: 'sec-more', task: 'Find both limits of `g` at infinity and the horizontal asymptotes of its graph.', board: 'g(x) = F{sqrt(25x^2 − x)}{3 − 2x}', teach: T_ATINF,
+    steps: [
+      { lead: 'Factor `x^2` out from under the root, using `sqrt(x^2) = |x|`.', ask: 'sqrt(25x^2 − x) = |x| ·', ans: 'sqrt(25 - 1/x)',
+        wrongs: [['sqrt(25 - x)', 'Divide each term under the root by `x^2`: `F{x}{x^2} = F{1}{x}`.'],
+          ['sqrt(25 - 1/x^2)', '`F{x}{x^2} = F{1}{x}`: one power of `x` cancels, so one is left on the bottom.'],
+          ['5 - 1/x', 'A square root does not split over a difference. Keep `25 − F{1}{x}` together under one root.']],
+        hints: ['Write `25x^2 − x = x^2(25 − F{1}{x})`. Then the root of `x^2` is `|x|`.'] },
+      { lead: 'Factor `x` out of the bottom.', ask: '3 − 2x = x ·', ans: '3/x - 2',
+        form: FORM.noParen('That is equal, but divide each term by `x` on its own and simplify.'),
+        wrongs: [['3 - 2/x', 'Divide each term by `x`: 3 becomes `F{3}{x}`, and `F{−2x}{x} = −2`.'],
+          ['3/x - 2x', 'Divide each term by `x`, including `−2x`, which becomes `−2`.']],
+        hints: ['Divide each term of `3 − 2x` by `x`.'] },
+      { lead: 'As `x → ∞`, `x` is positive, so `|x| = x`, and the `x` on top cancels the `x` on the bottom: `g(x) = F{sqrt(25 − F{1}{x})}{F{3}{x} − 2}`.', ask: 'lim{x→∞} g(x) =', num: true, ans: '-5/2',
+        wrongs: [['5/2', 'For large positive `x`, the top is positive and the bottom `3 − 2x` is negative, so the limit is negative.'],
+          [['-25/2', '25/2'], '`sqrt(25) = 5`, so the top approaches 5, not 25.'],
+          ['5/3', 'As `x → ∞`, `F{3}{x}` goes to 0, so the bottom approaches `−2`, not 3.']],
+        hints: ['Replace `F{1}{x}` and `F{3}{x}` with 0.'] },
+      { lead: 'As `x → −∞`, `x` is negative. Rewrite `|x|` without the bars.', ask: '|x| =', ans: '-x', teach: T_ABS,
+        wrongs: [['x', 'For negative `x`, `|x|` is the opposite of `x`. For example, `|−5| = 5 = −(−5)`.', ['#ex-p9', 'See Problem 9, the same step']]],
+        hints: ['Try a negative number: `|−5| = 5`. Is that `x` or `−x` when `x = −5`?'] },
+      { lead: 'With `|x| = −x`, cancelling the `x` leaves a minus sign: `g(x) = F{−sqrt(25 − F{1}{x})}{F{3}{x} − 2}`.', ask: 'lim{x→−∞} g(x) =', num: true, ans: '5/2',
+        wrongs: [['-5/2', 'Keep the minus sign from `|x| = −x`: the top approaches `−5` and the bottom `−2`, so the quotient is positive.'],
+          [['25/2', '-25/2'], '`sqrt(25) = 5`, so the top approaches `−5`, not `−25`.']],
+        hints: ['Replace `F{1}{x}` and `F{3}{x}` with 0, and keep the minus sign on top.'] },
+      { lead: 'What are the horizontal asymptotes of the graph of `g`?', ok: 0, pick: [
+        ['`y = −F{5}{2}` and `y = F{5}{2}`', 'Each limit at infinity that is a number gives a horizontal asymptote, and here the two limits differ.'],
+        ['`y = −F{5}{2}` only', 'That is the asymptote on the right. As `x → −∞` the graph levels off at `y = F{5}{2}`, a second asymptote.'],
+        ['`x = F{3}{2}`', 'That is where the bottom is 0, a vertical asymptote. A horizontal asymptote comes from a limit at `∞` or `−∞`.']] }],
+    graph: { x: [-40, 40], y: [-6, 6], ticks: { x: 10, y: 2 }, fns: [{ f: function (x) { return Math.sqrt(25 * x * x - x) / (3 - 2 * x); }, domain: [-40, 0] }, { f: function (x) { return Math.sqrt(25 * x * x - x) / (3 - 2 * x); }, domain: [0.04, 40], n: 800, breaks: [1.5] }],
+      hlines: [{ y: 2.5, role: 'muted' }, { y: -2.5, role: 'muted' }], vlines: [{ x: 1.5, role: 'muted' }],
+      texts: [{ x: -24, y: 2.5, text: 'y = 5/2', at: 'n' }, { x: 24, y: -2.5, text: 'y = −5/2', at: 'n' }],
+      aria: 'The graph of g with dashed horizontal lines at y = 5/2 and y = −5/2 and a dashed vertical asymptote at x = 3/2. Far to the left the curve levels off just below y = 5/2; far to the right it levels off just below y = −5/2.' },
+    after: 'The graph levels off at `y = F{5}{2}` on the left and at `y = −F{5}{2}` on the right. The spike near `x = F{3}{2}` is a vertical asymptote, where the bottom is 0.' }
 ];
 
 /* ================================ builder (keep unchanged when copying) ================================ */
@@ -3252,9 +3576,9 @@ function backHTML() {
     'Next, complete the Unit 3 Problem Set.']);
 }
 function page() {
-  return header('Unit 3 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.title.replace('Rewriting a ', '').replace(/^An? /, '')]; }).concat([['#sec-back', 'Next']])) +
+  return header('Unit 3 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.nav || s.title.replace('Rewriting a ', '').replace(/^An? /, '')]; }).concat([['#sec-back', 'Next']])) +
     '<main id="top">' + hero({ kicker: 'Calculus I · Unit 3: Computing Limits', title: 'Unit 3 Practice',
-      dek: 'Use this page after you read Unit 3: Computing Limits and Unit 3 Worked Examples. For each limit, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
+      dek: 'Use this page after you read Unit 3: Computing Limits and Unit 3 Worked Examples. For each limit, choose the method, then type each line of the work. Each line is checked before the next one opens. Problems 10 to 18, under More Practice, are optional. Type a power with ⟦^⟧, as in ⟦x^2⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
     SECTIONS_P.map(sectionHTML).join('') + backHTML() + '</main>';
 }
 expose({ PROBLEMS: PROBLEMS, problemHTML: problemHTML, formProblem: formProblem, stepDone: stepDone });
