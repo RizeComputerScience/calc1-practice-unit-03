@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Unit 3 Practice: Computing Limits</title>
+<title>Unit 3 Practice</title>
 <meta name="description" content="Practice computing limits with feedback on each line of your work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2809,7 +2809,7 @@ var selfcheck = (function () {
    ==================================================================================== */
 
 /* ---------------- links ---------------- */
-var PAUL_C = 'https://tutorial.math.lamar.edu/Classes/CalcI/', PAUL_P = 'https://tutorial.math.lamar.edu/Problems/CalcI/';
+var PAUL_C = 'https://tutorial.math.lamar.edu/Classes/CalcI/';
 function paulEx(page, title, ex) { return [PAUL_C + page + '.aspx', 'Paul’s Online Math Notes: ' + title + (ex ? ', ' + ex : '')]; }
 var T_PROPS = paulEx('LimitsProperties', 'Limit Properties', 'Examples 1 and 2');
 var T_FACTOR = paulEx('ComputingLimits', 'Computing Limits', 'Example 1');
@@ -3247,14 +3247,14 @@ function sectionHTML(s, n) {
   return sec(s.id, String(n + 1), s.title, s.lede) + col(ps.map(function (p) { return blk(p.id, function () { return problemHTML(p); }); }).join(''));
 }
 function backHTML() {
-  return sec('sec-back', '', 'Back to Paul', '') + prose('', [
-    'If one type of problem gave you trouble, rework Paul’s practice problems for it: [Computing Limits](' + PAUL_P + 'ComputingLimits.aspx), [Infinite Limits](' + PAUL_P + 'InfiniteLimits.aspx) or [Limits At Infinity, Part I](' + PAUL_P + 'LimitsAtInfinityI.aspx).',
-    'Next, complete Problem Set 2, Parts 1 and 2. Unit 4 continues in Paul’s notes with [Continuity](' + PAUL_C + 'Continuity.aspx).']);
+  return sec('sec-back', '', 'What Comes Next', '') + prose('', [
+    'If one kind of problem gave you trouble, find the example of that kind in Unit 3 Worked Examples, cover its solution, and work it by hand.',
+    'Next, complete the Unit 3 Problem Set.']);
 }
 function page() {
-  return header('Unit 3 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.title.replace('Rewriting a ', '').replace(/^An? /, '')]; }).concat([['#sec-back', 'Back to Paul']])) +
-    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 3', title: 'Unit 3 Practice: Computing Limits',
-      dek: 'Use this page after the Unit 3 reading and Paul’s practice problems. For each limit, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
+  return header('Unit 3 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.title.replace('Rewriting a ', '').replace(/^An? /, '')]; }).concat([['#sec-back', 'Next']])) +
+    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 3: Computing Limits', title: 'Unit 3 Practice',
+      dek: 'Use this page after you read Unit 3: Computing Limits and Unit 3 Worked Examples. For each limit, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
     SECTIONS_P.map(sectionHTML).join('') + backHTML() + '</main>';
 }
 expose({ PROBLEMS: PROBLEMS, problemHTML: problemHTML, formProblem: formProblem, stepDone: stepDone });
